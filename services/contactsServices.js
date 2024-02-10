@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 
 const contactsPath = path.join("db", "contacts.json");
 
-export async function listContacts() {
+async function listContacts() {
     const contactsList = await fs.readFile(contactsPath)
     return JSON.parse(contactsList)
 }
@@ -39,4 +39,4 @@ async function addContact(name, email, phone) {
     return newContact
 }
 
-// export default { listContacts, getContactById, removeContact, addContact }
+export default { listContacts, getContactById, removeContact, addContact }
