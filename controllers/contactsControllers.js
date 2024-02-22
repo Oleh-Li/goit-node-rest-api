@@ -10,8 +10,20 @@ const getAllContacts = async (req, res) => {
     res.json(result)
 };
 
+// const getOneContact = async (req, res) => {
+//     const result = await Contact.findById(req.params.id)
+//     if (!result) {
+//         throw HttpError(404, "Not found")
+//     }
+//     res.json(result)
+
+// };
+
+//to find contact wich belong owner
 const getOneContact = async (req, res) => {
-    const result = await Contact.findById(req.params.id)
+    const { _id: owner } = req.user;
+    const contactId = req.params.id;
+    const result = await await Contact.findOne({ _id: contactId, owner })
     if (!result) {
         throw HttpError(404, "Not found")
     }
