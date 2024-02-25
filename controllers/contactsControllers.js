@@ -3,12 +3,27 @@ import { ctrlWrapper } from "../helpers/ctrlsWrapper.js"
 import { HttpError } from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-    const result = await Contact.find()
+    const { _id: owner } = req.user
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const result = await Contact.find({ owner }, "-createdAt -updatedAt", { skip, limit }).populate("owner", "email password");
     res.json(result)
 };
 
+// const getOneContact = async (req, res) => {
+//     const result = await Contact.findById(req.params.id)
+//     if (!result) {
+//         throw HttpError(404, "Not found")
+//     }
+//     res.json(result)
+
+// };
+
+//to find contact wich belong owner
 const getOneContact = async (req, res) => {
-    const result = await Contact.findById(req.params.id)
+    const { _id: owner } = req.user;
+    const contactId = req.params.id;
+    const result = await await Contact.findOne({ _id: contactId, owner })
     if (!result) {
         throw HttpError(404, "Not found")
     }
@@ -26,8 +41,9 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-    const result = await Contact.create(req.body)
-    res.status(201).json(result)
+    const { _id: owner } = req.user;
+    const result = await Contact.create({ ...req.body, owner });
+    res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
@@ -52,5 +68,5 @@ export default {
     deleteContact: ctrlWrapper(deleteContact),
     createContact: ctrlWrapper(createContact),
     updateContact: ctrlWrapper(updateContact),
-    updateContactFavorite: ctrlWrapper(updateContact),
+    updateContactFavorite: ctrlWrapper(updateContactFavorite),
 }
