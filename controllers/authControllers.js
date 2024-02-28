@@ -5,6 +5,7 @@ import { HttpError } from "../helpers/HttpError.js"
 import { ctrlWrapper } from "../helpers/ctrlsWrapper.js"
 import dotenv from 'dotenv';
 dotenv.config();
+import gravatar from "gravatar"
 
 const { SECRET_KEY } = process.env
 
@@ -17,10 +18,12 @@ const register = async (req, res) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10)
+    const avatarURL = gravatar.url(email)
 
-    const newUser = await User.create({ ...req.body, password: hashPassword })
+    const newUser = await User.create({ ...req.body, password: hashPassword, avatarURL })
 
     res.status(201).json({
+        name: newUser.name,
         email: newUser.email,
         password: newUser.password,
         subscription: newUser.subscription
