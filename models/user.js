@@ -55,6 +55,10 @@ export const loginSchema = Joi.object({
     password: Joi.string().required()
 })
 
+export const emailSchema = Joi.object({
+    email: Joi.string().pattern(emailRegexp).required()
+})
+
 
 userSchema.post("save", handleMongooseError)
 

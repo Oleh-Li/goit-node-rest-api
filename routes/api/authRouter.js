@@ -1,13 +1,17 @@
 import express from "express"
 import ctrl from "../../controllers/authControllers.js"
 import { validateBody } from "../../middlewares/validateBody.js"
-import { registerSchema, loginSchema } from "../../models/user.js"
+import { registerSchema, loginSchema, emailSchema } from "../../models/user.js"
 import authenticate from "../../middlewares/authenticate.js"
 import upload from "../../middlewares/upload.js"
 
 const authRouter = express.Router()
 
 authRouter.post("/register", validateBody(registerSchema), ctrl.register)
+
+authRouter.get("/verify/:verificationCode", ctrl.verifyEmail)
+
+authRouter.post("/verify", validateBody(emailSchema), ctrl.resendVerifyEmail)
 
 authRouter.post("/login", validateBody(loginSchema), ctrl.login)
 
